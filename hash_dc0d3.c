@@ -9,27 +9,41 @@ int main() {
     int choice;
     int decode_len = base64_decode(str, output);
 
-    // TODO: add func for encode
-
     do {
-        printf("Enter base64 string: ");
-        scanf("%s", str);
-
-        decode_len = base64_decode(str, output);
-        if (decode_len > 0) {
-            output[decode_len] = '\0';
-            printf("Decoded output: %s\n", output);
-        } else {
-            printf("Decoding failed\n");
-        }
-
-        printf("Choose an option:\n");
-        printf("1. Continue\n");
-        printf("2. Exit\n");
-        printf("Enter your choice: ");
+        printf("Choose an option:\n"
+               "1. Encode string to base64\n"
+               "2. Decode base64 string\n"
+               "3. Exit\n\n"
+               "Enter your choice: ");
         scanf("%d", &choice);
 
-    } while (choice == 1);
+        switch (choice) {
+        case 1:
+            printf("Encoding function is not ready.\n\n");
+            break;
+        case 2:
+            printf("Enter base64 string: ");
+            scanf("%s", str);
+
+            decode_len = base64_decode(str, output);
+            if (decode_len > 0) {
+                output[decode_len] = '\0';
+                printf("Decoded output: %s\n\n", output);
+            } else {
+                printf("Decoding failed\n\n");
+            }
+            break;
+
+        case 3:
+            printf("Exiting the program.\n");
+            break;
+
+        default:
+            printf("Invalid choice. Please try again.\n\n");
+            break;
+        }
+
+    } while (choice != 3);
 
     return 0;
 }
