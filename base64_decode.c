@@ -12,9 +12,10 @@ int base64_decode(const char *input, unsigned char *output) {
     int output_len = 0;
 
     char *input_clean = malloc(input_len + 1);
-    if (input_clean == NULL) {
-        fprintf(stderr, "Memory allocation error (%d bytes): %s\n", input_len + 1, strerror(errno));
-        return -1;
+    if (!input_clean) {
+        fprintf(stderr, "Memory allocation error for %d bytes. Error %d: %s\n", input_len + 1,
+                errno, strerror(errno));
+        exit(EXIT_FAILURE);
     }
     char *ptr = input_clean;
     for (size_t i = 0; i < input_len; ++i) {

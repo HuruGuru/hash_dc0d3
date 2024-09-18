@@ -4,6 +4,12 @@
 
 #define N 1024
 
+void clear_input_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+    }
+}
+
 void show_menu() {
     char str[N];
     unsigned char output[N];
@@ -16,7 +22,13 @@ void show_menu() {
                "2. Decode base64 string\n"
                "3. Exit\n\n"
                "Enter your choice: ");
-        scanf("%d", &choice);
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Please enter a number.\n\n");
+            clear_input_buffer();
+            continue;
+        }
+
+        clear_input_buffer();
 
         switch (choice) {
         case 1:
