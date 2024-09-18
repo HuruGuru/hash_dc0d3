@@ -1,4 +1,5 @@
 #include "base64.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +13,7 @@ int base64_decode(const char *input, unsigned char *output) {
 
     char *input_clean = malloc(input_len + 1);
     if (input_clean == NULL) {
-        perror("Memory allocation error");
+        fprintf(stderr, "Memory allocation error (%d bytes): %s\n", input_len + 1, strerror(errno));
         return -1;
     }
     char *ptr = input_clean;
