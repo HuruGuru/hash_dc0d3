@@ -3,9 +3,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 static const char base64_table[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+char *base64_encode(const unsigned char *data, size_t input_len, size_t *output_len) {
+    *output_len = 4 * ((input_len + 2) / 3);
+    char *encoded_data = malloc(*output_len + 1);
+    if (!encoded_data) {
+        fprintf(stderr, "Memory allocation error for %zu bytes. Error %d: %s\n", *output_len + 1,
+                errno, strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    for (size_t i = 0, j = 0; i < input_len;) {
+        unsigned char a = i < input_len ? data[i++] : 0;
+        unsigned char b = i < input_len ? data[i++] : 0;
+        unsigned char c = i < input_len ? data[i++] : 0;
+
+        u_int32_t triple = (a << 16) + (b << 8) + c;
+
+        encoded_data[j++] = base64_table[(triple >> 18) & 0x3F];
+        encoded_data[j++] = base64_table[(triple >> 12) & 0x3F];
+        encoded_data[j++] = (i > input_len + 1) ? '=' : base64_table[(triple >> 6) & 0x3F];
+        encoded_data[j++] = (i > input_len) ? '=' : base64_table[triple & 0x3F];
+    }
+
+    encoded_data[*output_len] = '\0';
+
+    return encoded_data;
+}
 
 int base64_decode(const char *input, unsigned char *output) {
     int input_len = strlen(input);
@@ -44,5 +72,6 @@ int base64_decode(const char *input, unsigned char *output) {
     }
 
     free(input_clean);
+
     return output_len;
 }

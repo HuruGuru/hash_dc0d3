@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "base64.h"
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define N 1024
 
@@ -13,7 +14,8 @@ void clear_input_buffer() {
 void show_menu() {
     char str[N];
     unsigned char output[N];
-    int decode_len;
+    size_t encode_len;
+    size_t decode_len;
     int choice;
 
     do {
@@ -32,11 +34,21 @@ void show_menu() {
 
         switch (choice) {
         case 1:
-            printf("Encoding function is not ready.\n\n"); // TODO: add encode func
+            printf("Enter string to encode: ");
+            fgets(str, sizeof(str), stdin);
+            str[strcspn(str, "\n")] = '\0';
+            char *encoded_data = base64_encode((unsigned char *)str, strlen(str), &encode_len);
+            if (encoded_data) {
+                printf("Encoded output: %s\n\n", encoded_data);
+                free(encoded_data);
+            } else {
+                printf("Encoding failed\n\n");
+            }
             break;
         case 2:
             printf("Enter base64 string: ");
             scanf("%s", str);
+            clear_input_buffer();
 
             decode_len = base64_decode(str, output);
             if (decode_len > 0) {
