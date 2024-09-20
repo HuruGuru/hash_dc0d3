@@ -22,7 +22,7 @@ void show_menu() {
         printf("Choose an option:\n"
                "1. Encode string to base64\n"
                "2. Decode base64 string\n"
-               // TODO: add md5 e/d  sha128 256
+               // TODO: add md5 e/d  sha256 bcrypt
                "3. Encode string to md5\n"
                "4. Decode md5 string\n"
                "5. Exit\n\n"
