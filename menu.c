@@ -69,10 +69,9 @@ void show_menu() {
             printf("Enter string to hash: ");
             fgets(str, sizeof(str), stdin);
             str[strcspn(str, "\n")] = '\0';
-            printf("===============\n%s\n================\n", str);
 
             uint8_t md5_hash[16];
-            md5((const uint8_t *)str, strlen(str), md5_hash); // FIXME: wrong hash
+            md5((const uint8_t *)str, strlen(str), md5_hash);
             printf("MD5 hash: ");
             for (size_t i = 0; i < sizeof(md5_hash); ++i) {
                 printf("%02x", md5_hash[i]);
