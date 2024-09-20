@@ -1,5 +1,8 @@
 #include "menu.h"
 #include "base64.h"
+#include "md5.h"
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,7 +25,7 @@ void show_menu() {
         printf("Choose an option:\n"
                "1. Encode string to base64\n"
                "2. Decode base64 string\n"
-               // TODO: add md5 e/d  sha256 bcrypt
+               // TODO: add md5-decode, sha256, bcrypt
                "3. Encode string to md5\n"
                "4. Decode md5 string\n"
                "5. Exit\n\n"
@@ -63,7 +66,18 @@ void show_menu() {
             break;
 
         case 3:
-            printf("Not ready yet\n");
+            printf("Enter string to hash: ");
+            fgets(str, sizeof(str), stdin);
+            str[strcspn(str, "\n")] = '\0';
+            printf("===============\n%s\n================\n", str);
+
+            uint8_t md5_hash[16];
+            md5((const uint8_t *)str, strlen(str), md5_hash); // FIXME: wrong hash
+            printf("MD5 hash: ");
+            for (size_t i = 0; i < sizeof(md5_hash); ++i) {
+                printf("%02x", md5_hash[i]);
+            }
+            printf("\n");
             break;
 
         case 4:
