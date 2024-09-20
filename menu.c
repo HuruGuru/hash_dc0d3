@@ -22,7 +22,10 @@ void show_menu() {
         printf("Choose an option:\n"
                "1. Encode string to base64\n"
                "2. Decode base64 string\n"
-               "3. Exit\n\n"
+               // TODO: add md5 e/d  sha128 256
+               "3. Encode string to md5\n"
+               "4. Decode md5 string\n"
+               "5. Exit\n\n"
                "Enter your choice: ");
         if (scanf("%d", &choice) != 1) {
             printf("Invalid input. Please enter a number.\n\n");
@@ -60,6 +63,14 @@ void show_menu() {
             break;
 
         case 3:
+            printf("Not ready yet\n");
+            break;
+
+        case 4:
+            printf("Not ready yet\n");
+            break;
+
+        case 5:
             printf("Exiting the program.\n");
             break;
 
@@ -68,5 +79,5 @@ void show_menu() {
             break;
         }
 
-    } while (choice != 3);
+    } while (choice != 5);
 }
