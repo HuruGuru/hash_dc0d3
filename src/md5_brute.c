@@ -1,4 +1,4 @@
-#include "../include/md5.h"
+#include <md5.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,6 +52,7 @@ char *generate_combinations(const char *charset, int charset_length, int max_len
     return NULL;
 }
 
+// TODO: add threads???
 char *brute_force_md5(const char *target_hash, const char *dict_file) {
     FILE *file = fopen(dict_file, "r");
     if (!file) {

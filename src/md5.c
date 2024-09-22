@@ -1,4 +1,4 @@
-#include "../include/md5.h"
+#include <md5.h>
 #include <stdint.h>
 #include <string.h>
 

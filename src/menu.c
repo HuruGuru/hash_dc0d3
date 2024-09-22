@@ -1,6 +1,6 @@
-#include "../include/base64.h"
-#include "../include/md5.h"
-#include "../include/md5_brute.h"
+#include <base64.h>
+#include <md5.h>
+#include <md5_brute.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

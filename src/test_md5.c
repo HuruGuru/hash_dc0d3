@@ -1,5 +1,5 @@
-#include "../include/md5.h"
 #include <assert.h>
+#include <md5.h>
 #include <stdio.h>
 #include <string.h>
 
