@@ -46,7 +46,7 @@ int base64_decode(const char *input, unsigned char *output) {
         exit(EXIT_FAILURE);
     }
     char *ptr = input_clean;
-    for (size_t i = 0; i < input_len; ++i) {
+    for (int i = 0; i < input_len; ++i) {
         if (input[i] != '\n' && input[i] != ' ') {
             *ptr = input[i];
             ptr++;
@@ -56,7 +56,7 @@ int base64_decode(const char *input, unsigned char *output) {
     *ptr = '\0';
     input_len = ptr - input_clean;
 
-    for (size_t i = 0; i < input_len; i += 4) {
+    for (int i = 0; i < input_len; i += 4) {
         int a = strchr(base64_table, input_clean[i]) - base64_table;
         int b = strchr(base64_table, input_clean[i + 1]) - base64_table;
         int c = strchr(base64_table, input_clean[i + 2]) - base64_table;
