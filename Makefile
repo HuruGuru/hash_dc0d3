@@ -7,10 +7,10 @@ ODIR = obj
 CC = gcc
 CFLAGS = -I$(IDIR)
 
-_DEPS = base64.h md5.h menu.h
+_DEPS = base64.h md5.h md5_brute.h menu.h 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = base64.o hash_dc0d3.o md5.o menu.o
+_OBJ = base64.o hash_dc0d3.o md5.o md5_brute.o menu.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 BIN = hash_dc0d3
