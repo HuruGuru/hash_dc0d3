@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #define N 1024
 
@@ -115,8 +116,10 @@ void show_menu() {
             if (strcmp(dict_path, "0") == 0) {
                 break;
             }
+            clock_t start_time = clock();
             char *result = brute_force_md5(str, dict_path);
-
+            clock_t end_time = clock();
+            double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
             if (result) {
                 printf("\n=========================\n");
                 printf("Found match: %s\n", result);
@@ -125,6 +128,7 @@ void show_menu() {
             } else {
                 printf("Not found.\n");
             }
+            printf("Time taken: %.2f sec\n\n", time_spent);
             break;
 
         case 5:
