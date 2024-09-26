@@ -8,15 +8,23 @@
 #include <sys/stat.h>
 #include <time.h>
 
+typedef enum {
+    MENU_ENCODE_BASE64 = 1,
+    MENU_DECODE_BASE64,
+    MENU_ENCODE_MD5,
+    MENU_DECODE_MD5,
+    MENU_EXIT
+} MenuOptions;
+
 #define N 1024
 
-void clear_input_buffer() {
+static void clear_input_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {
     }
 }
 
-int file_exists(const char *path) {
+static int file_exists(const char *path) {
     struct stat buffer;
     return (stat(path, &buffer) == 0);
 }
@@ -46,7 +54,7 @@ void show_menu() {
         clear_input_buffer();
 
         switch (choice) {
-        case 1:
+        case MENU_ENCODE_BASE64:
             printf("Enter string to encode: ");
             fgets(str, sizeof(str), stdin);
             str[strcspn(str, "\n")] = '\0';
@@ -60,7 +68,7 @@ void show_menu() {
                 printf("Encoding failed\n\n");
             }
             break;
-        case 2:
+        case MENU_DECODE_BASE64:
             printf("Enter base64 string: ");
             scanf("%s", str);
             clear_input_buffer();
@@ -76,7 +84,7 @@ void show_menu() {
             }
             break;
 
-        case 3:
+        case MENU_ENCODE_MD5:
             printf("Enter string to hash: ");
             fgets(str, sizeof(str), stdin);
             str[strcspn(str, "\n")] = '\0';
@@ -91,7 +99,7 @@ void show_menu() {
             printf("\n=============================\n\n");
             break;
 
-        case 4:
+        case MENU_DECODE_MD5:
             printf("Enter MD5 hash to crack: ");
             fgets(str, sizeof(str), stdin);
             str[strcspn(str, "\n")] = '\0';
@@ -131,7 +139,7 @@ void show_menu() {
             printf("Time taken: %.2f sec\n\n", time_spent);
             break;
 
-        case 5:
+        case MENU_EXIT:
             printf("Exiting the program.\n");
             break;
 
