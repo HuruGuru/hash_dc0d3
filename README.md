@@ -1,10 +1,10 @@
 ### Description:
 
-A simple utility for Base64 encoding-decoding and data hashing, as well as cracking MD5, SHA-256, and bcrypt hashes using dictionary-based attacks.
+Simple tool for Base64 encoding-decoding, hashing-cracking MD5, SHA256, and bcrypt  using dictionary-based attacks.
 
-It is recommended to use the "rockyou" wordlist (or any other) that contains a wide range of commonly used passwords.
+It is recommended to use the "rockyou" wordlist (or any other) that contains a range of commonly used passwords.
 
-**For more complex hashing algorithms and advanced cracking techniques, it is recommended to use Hashcat, a powerful tool optimized for such tasks.**
+**For more complex hashing algorithms and advanced cracking techniques, it is recommended to use Hashcat**
 
 ### To build the app:
 
