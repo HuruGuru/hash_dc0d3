@@ -15,7 +15,7 @@ typedef enum {
     MENU_DECODE_BASE64,
     MENU_ENCODE_MD5,
     MENU_DECODE_MD5,
-    MENU_EXIT
+    MENU_EXIT = 0,
 } MenuOptions;
 
 typedef struct {
@@ -48,7 +48,7 @@ void show_menu() {
                // TODO: add sha256, bcrypt
                "3. Encode string to md5\n"
                "4. Decode md5 string\n"
-               "5. Exit\n\n"
+               "0. Exit\n\n"
                "Enter your choice: ");
         if (scanf("%d", &choice) != 1) {
             printf("Invalid input. Please enter a number.\n\n");
