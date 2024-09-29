@@ -11,11 +11,13 @@
 #define N 1024
 
 typedef enum {
-    MENU_ENCODE_BASE64 = 1,
-    MENU_DECODE_BASE64,
-    MENU_ENCODE_MD5,
-    MENU_DECODE_MD5,
     MENU_EXIT = 0,
+    MENU_ENCODE_BASE64,
+    MENU_DECODE_BASE64,
+    MENU_HASH_MD5,
+    MENU_CRACK_MD5,
+    MENU_HASH_SHA256,
+    MENU_CRACK_SHA256,
 } MenuOptions;
 
 typedef struct {
@@ -37,17 +39,25 @@ static int file_exists(const char *path) {
     return (stat(path, &buffer) == 0);
 }
 
+static void clear_screen() {
+    system("clear");
+    fflush(stdout);
+}
+
 void show_menu() {
     AppState state;
     int choice;
 
     do {
+        clear_screen();
         printf("Choose an option:\n"
                "1. Encode string to base64\n"
                "2. Decode base64 string\n"
                // TODO: add sha256, bcrypt
-               "3. Encode string to md5\n"
-               "4. Decode md5 string\n"
+               "3. String to hash md5\n"
+               "4. Crack md5 hash\n"
+               "5. String to hash sha256\n"
+               "6. Crack sha256 hash\n"
                "0. Exit\n\n"
                "Enter your choice: ");
         if (scanf("%d", &choice) != 1) {
@@ -57,6 +67,7 @@ void show_menu() {
         }
 
         clear_input_buffer();
+        clear_screen();
 
         switch (choice) {
         case MENU_ENCODE_BASE64:
@@ -90,7 +101,7 @@ void show_menu() {
             }
             break;
 
-        case MENU_ENCODE_MD5:
+        case MENU_HASH_MD5:
             printf("Enter string to hash: ");
             fgets(state.str, sizeof(state.str), stdin);
             state.str[strcspn(state.str, "\n")] = '\0';
@@ -105,7 +116,7 @@ void show_menu() {
             printf("\n=============================\n\n");
             break;
 
-        case MENU_DECODE_MD5:
+        case MENU_CRACK_MD5:
             printf("Enter MD5 hash to crack: ");
             fgets(state.str, sizeof(state.str), stdin);
             state.str[strcspn(state.str, "\n")] = '\0';
@@ -145,13 +156,26 @@ void show_menu() {
             printf("Time taken: %.2f sec\n\n", time_spent);
             break;
 
+        case MENU_HASH_SHA256:
+            printf("Not ready yet!\n\n");
+            break;
+
+        case MENU_CRACK_SHA256:
+            printf("Not ready yet!\n\n");
+            break;
+
         case MENU_EXIT:
+            clear_screen();
             printf("Exiting the program.\n");
             break;
 
         default:
             printf("Invalid choice. Please try again.\n\n");
             break;
+        }
+        if (choice != MENU_EXIT) {
+            printf("Press Enter to continue...");
+            getchar();
         }
 
     } while (choice != MENU_EXIT);
