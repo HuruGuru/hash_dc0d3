@@ -1,10 +1,11 @@
+#include <errno.h>
 #include <md5.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #define MD5_LEN 16
 #define MAX_LINE_LENGTH 1024
@@ -55,7 +56,8 @@ void *thread_brute_md5(void *arg) {
 char **load_dict(const char *dict_file, int *line_count) {
     FILE *file = fopen(dict_file, "r");
     if (!file) {
-        perror("Could not open file");
+        fprintf(stderr, "Failed to open file '%s'. Error %d: %s\n", dict_file, errno,
+                strerror(errno));
         return NULL;
     }
 
@@ -66,7 +68,8 @@ char **load_dict(const char *dict_file, int *line_count) {
 
     lines = malloc(sizeof(char *) * capacity);
     if (!lines) {
-        perror("Memory allocation error for strings");
+        fprintf(stderr, "Memory allocation error for %zu bytes. Error %d: %s\n",
+                sizeof(char *) * capacity, errno, strerror(errno));
         fclose(file);
         return NULL;
     }
@@ -76,7 +79,8 @@ char **load_dict(const char *dict_file, int *line_count) {
             capacity *= 2;
             char **new_lines = realloc(lines, sizeof(char *) * capacity);
             if (!new_lines) {
-                perror("Memory reallocation error");
+                fprintf(stderr, "Memory reallocation error for %zu bytes. Error %d: %s\n",
+                        sizeof(char *) * capacity, errno, strerror(errno));
                 for (int j = 0; j < count; ++j) {
                     free(lines[j]);
                 }
@@ -90,7 +94,8 @@ char **load_dict(const char *dict_file, int *line_count) {
         line[strcspn(line, "\n")] = '\0';
         lines[count] = strdup(line);
         if (!lines[count]) {
-            perror("Memory allocation error for string");
+            fprintf(stderr, "Memory allocation error for string of length %zu. Error %d: %s\n",
+                    strlen(line) + 1, errno, strerror(errno));
             for (int j = 0; j < count; ++j) {
                 free(lines[j]);
             }
@@ -122,14 +127,15 @@ char *brute_force_md5(const char *target_hash, const char *dict_file) {
     int line_count;
     char **lines = load_dict(dict_file, &line_count);
     if (!lines) {
-        fprintf(stderr, "Could not load dictionary\n");
+        fprintf(stderr, "Failed to load dictionary '%s'\n", dict_file);
         return NULL;
     }
 
     pthread_t *threads = malloc(sizeof(pthread_t) * MAX_THREADS);
     ThreadData *thread_data = malloc(sizeof(ThreadData) * MAX_THREADS);
     if (!threads || !thread_data) {
-        perror("Memory allocation error for threads");
+        fprintf(stderr, "Memory allocation error for threads or thread data. Error %d: %s\n", errno,
+                strerror(errno));
         cleanup(lines, line_count, threads, thread_data);
         return NULL;
     }
@@ -148,8 +154,9 @@ char *brute_force_md5(const char *target_hash, const char *dict_file) {
         thread_data[i].found = &found;
         thread_data[i].mutex = &mutex;
 
-        if (pthread_create(&threads[i], NULL, thread_brute_md5, &thread_data[i]) != 0) {
-            perror("Failed to create thread\n");
+        int rc = pthread_create(&threads[i], NULL, thread_brute_md5, &thread_data[i]);
+        if (rc != 0) {
+            fprintf(stderr, "Failed to create thread %d. Error %d: %s\n", i, rc, strerror(rc));
             cleanup(lines, line_count, threads, thread_data);
             return NULL;
         }
@@ -157,9 +164,10 @@ char *brute_force_md5(const char *target_hash, const char *dict_file) {
 
     for (int i = 0; i < MAX_THREADS; i++) {
         void *thread_result;
-        pthread_join(threads[i], &thread_result);
-
-        if (thread_result != NULL) {
+        int rc = pthread_join(threads[i], &thread_result);
+        if (rc != 0) {
+            fprintf(stderr, "Failed to join thread %d. Error %d: %s\n", i, rc, strerror(rc));
+        } else if (thread_result != NULL) {
             result = (char *)thread_result;
         }
     }
