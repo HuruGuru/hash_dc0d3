@@ -1,6 +1,7 @@
 #include <base64.h>
 #include <md5.h>
 #include <md5_brute.h>
+#include <sha256.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +23,7 @@ typedef enum {
 
 typedef struct {
     char str[N];
+    char dict_path[256];
     unsigned char output[N];
     size_t encode_len;
     size_t decode_len;
@@ -47,6 +49,9 @@ static void clear_screen() {
 void show_menu() {
     AppState state;
     int choice;
+    clock_t start_time, end_time;
+    double time_spent;
+    char *result;
 
     do {
         clear_screen();
@@ -120,31 +125,31 @@ void show_menu() {
             printf("Enter MD5 hash to crack: ");
             fgets(state.str, sizeof(state.str), stdin);
             state.str[strcspn(state.str, "\n")] = '\0';
-            char dict_path[256];
             while (1) {
                 printf("Enter path to the dictionary file (or enter '0' to go back): ");
-                fgets(dict_path, sizeof(dict_path), stdin);
-                dict_path[strcspn(dict_path, "\n")] = '\0';
+                fgets(state.dict_path, sizeof(state.dict_path), stdin);
+                state.dict_path[strcspn(state.dict_path, "\n")] = '\0';
 
-                if (strcmp(dict_path, "0") == 0) {
+                if (strcmp(state.dict_path, "0") == 0) {
                     printf("\n");
                     break;
                 }
 
-                if (file_exists(dict_path)) {
+                if (file_exists(state.dict_path)) {
                     break;
                 } else {
-                    printf("Error: File not found at path: %s. Please try again.\n", dict_path);
+                    printf("Error: File not found at path: %s. Please try again.\n",
+                           state.dict_path);
                 }
             }
 
-            if (strcmp(dict_path, "0") == 0) {
+            if (strcmp(state.dict_path, "0") == 0) {
                 break;
             }
-            clock_t start_time = clock();
-            char *result = brute_force_md5(state.str, dict_path);
-            clock_t end_time = clock();
-            double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+            start_time = clock();
+            result = brute_force_md5(state.str, state.dict_path);
+            end_time = clock();
+            time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
             if (result) {
                 printf("\n=========================\n");
                 printf("Found match: %s\n", result);
@@ -157,11 +162,43 @@ void show_menu() {
             break;
 
         case MENU_HASH_SHA256:
-            printf("Not ready yet!\n\n");
+            printf("Enter string to hash: ");
+            fgets(state.str, sizeof(state.str), stdin);
+            state.str[strcspn(state.str, "\n")] = '\0';
+
+            uint8_t sha256_hash[32];
+            char sha256_string[65];
+            sha256(state.str, strlen(state.str), sha256_hash);
+            sha256_to_string(sha256_hash, sha256_string);
+
+            printf("=============================\n");
+            printf("SHA256 hash: %s\n", sha256_string);
+            printf("=============================\n");
             break;
 
         case MENU_CRACK_SHA256:
-            printf("Not ready yet!\n\n");
+            printf("Enter SHA256 hash to crack: ");
+            fgets(state.str, sizeof(state.str), stdin);
+            state.str[strcspn(state.str, "\n")] = '\0';
+
+            printf("Enter path to the dictionary file: ");
+            fgets(state.dict_path, sizeof(state.dict_path), stdin);
+            state.dict_path[strcspn(state.dict_path, "\n")] = '\0';
+
+            start_time = clock();
+            result = brute_force_sha256(state.str, state.dict_path);
+            end_time = clock();
+            time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+            if (result) {
+                printf("\n=========================\n");
+                printf("Found match: %s\n", result);
+                printf("=========================\n");
+                free(result);
+            } else {
+                printf("Not found.\n");
+            }
+            printf("Time taken: %.2f sec\n", time_spent);
             break;
 
         case MENU_EXIT:
