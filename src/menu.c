@@ -58,11 +58,11 @@ void show_menu() {
         printf("Choose an option:\n"
                "1. Encode string to base64\n"
                "2. Decode base64 string\n"
-               // TODO: add sha256, bcrypt
                "3. String to hash md5\n"
                "4. Crack md5 hash\n"
                "5. String to hash sha256\n"
                "6. Crack sha256 hash\n"
+               // TODO: add bcrypt
                "0. Exit\n\n"
                "Enter your choice: ");
         if (scanf("%d", &choice) != 1) {
@@ -176,6 +176,7 @@ void show_menu() {
             printf("=============================\n");
             break;
 
+        // TODO: add threades
         case MENU_CRACK_SHA256:
             printf("Enter SHA256 hash to crack: ");
             fgets(state.str, sizeof(state.str), stdin);
